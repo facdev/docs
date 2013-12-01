@@ -6,14 +6,14 @@ $DOC.parseContent(function(){/*
 %navbar(
 [Главная]({{=$DOC.root}}index.html)
 ***
-* [Главная]({{=$DOC.root}}index.html)
 )%navbar
 -->
 
 <!--header-panel
 
 # Markdown webdocs
-Система подготовки веб-справки и документации
+Система подготовки веб-справки и документации  
+Редактор документов с Markdown разметкой
 -->
 
 <!--footer-panel
