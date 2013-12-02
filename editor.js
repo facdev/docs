@@ -963,8 +963,12 @@ function initialize() {
                 user = github.user || '',
                 repo = github.repo || '',
                 branch = github.branch || 'gh-pages',
-                names = getMwFileName({fileName:daourl.github_path || host.fileName}),
+                names = getMwFileName({fileName:daourl.github_path}),
                 apikey = sessionStorage.getItem('github-apikey') || '';
+        
+                if (!names.fileName)
+                    // /repo/path
+                    names = getMwFileName({fileName:location.pathname.split('/').slice(2).join('/')});
         
             // input settings
             if (force_open || !user || !apikey || !repo || !names.fileName || !branch) {
@@ -988,7 +992,7 @@ function initialize() {
                         daourl.raise();
                         $(modal.element).modal('hide');
                         if (modal.callback)
-                            modal.callback(github.user && github.repo && github.branch && modal.apikey.value);
+                            modal.callback(github.user && github.repo && github.branch && daourl.github_path && modal.apikey.value);
                     });
                     modal.Cancel.listen('click', function() {
                         $(modal.element).modal('hide');
@@ -1020,7 +1024,7 @@ function initialize() {
 
             var repo = githubapi.getRepo(github.user, github.repo),
                 mw_html = controller.buildHTML();
-                var names = getMwFileName({fileName:daourl.github_path || host.fileName});
+                var names = getMwFileName({fileName:daourl.github_path});
 
             if (host.fileMode) {
                 var html = preview.grabHTML();
@@ -1074,16 +1078,11 @@ function initialize() {
     
     function getMwFileName(data) {
         var fileName = data.fileName, mwFileName = data.mwFileName;
+        if (!fileName)
+            return data;
         // location != *.html
         if (fileName.slice(-5) !== '.html') {
             return getMwFileName({fileName:fileName + '.html'});
-//            // location == *.mw
-//            if (fileName.slice(-3) === '.mw') {
-//                mwFileName = fileName;
-//                fileName = fileName.slice(0, fileName.length - 3);
-//            // location != *.mw
-//            } else
-//                mwFileName = fileName + '.mw';
         }
         // location == *.mw.html
         else if (fileName.slice(-8) === '.mw.html') {
