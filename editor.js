@@ -995,8 +995,8 @@ function initialize() {
                         daourl.github_path = modal.path.value || '';
                         daourl.raise();
                         $(modal.element).modal('hide');
-                        concole.log(modal.callback);
-                        concole.log(github.user && github.repo && github.branch && daourl.github_path && modal.apikey.value);
+                        console.log(modal.callback);
+                        console.log(github.user && github.repo && github.branch && daourl.github_path && modal.apikey.value);
                         if (modal.callback)
                             modal.callback(github.user && github.repo && github.branch && daourl.github_path && modal.apikey.value);
                     });
