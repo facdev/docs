@@ -4,7 +4,7 @@ $DOC.parseContent(function(){/*
 
 <!--fixed-top-bar
 %navbar(
-[Главная]({{=$DOC.root}}index.html)
+[Home]({{=$DOC.root}}index.html)
 ***
 )%navbar
 -->
