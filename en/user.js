@@ -12,8 +12,8 @@ $DOC.parseContent(function(){/*
 <!--header-panel
 
 # Markdown webdocs
-Система подготовки веб-справки и документации  
-Редактор документов с Markdown разметкой
+Web Help and Documentation system
+Editing Markdown documents with preview
 -->
 
 <!--footer-panel
