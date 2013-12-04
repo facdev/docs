@@ -1,5 +1,4 @@
 
-// example of using $DOC.parseContent function to create sections
 $DOC.parseContent(function(){/*
 
 <!--fixed-top-bar
