@@ -12,7 +12,7 @@ $DOC.parseContent(function(){/*
 <!--header-panel
 
 # Markdown webdocs
-Web Help and Documentation system
+Web Help and Documentation system  
 Editing Markdown documents with preview
 -->
 
