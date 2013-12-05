@@ -3,7 +3,7 @@
     $('title').text('Запрашиваемая страница не найдена');
 
     $DOC.onload(function() {
-        var div = $DOC.cbody.add('div`mar20');
+        var div = $DOC.cbody.add('form404:div`mar20');
         div
             ._add('h1', 'Запрашиваемая страница не найдена!')
             ._add('hr')
@@ -17,6 +17,23 @@
             ._add('fork:bootstrap.Button`martop5', 'Создать Fork этого репозитория');
         div.createElement($DOC.sections['fixed-top-bar'], 3);
     });
+    
+    function githubCommitSuccess() {
+        $DOC.cbody.form404
+            .deleteAll()
+            .remove();
+        var div = $DOC.cbody.add('github_commit:div`mar20');
+        div
+            ._add('h1', 'Новая страница успешно создана!')
+            ._add('hr')
+            ._add('h3', 'Через некоторое время (обычно это не больше минуты) новая страница станет доступна в браузере')
+            ._add('refresh:bootstrap.Button`martop5', 'Перезагрузить эту страницу', function(btn) {
+                btn.listen('click', function() {
+                    location.reload();
+                });
+            });
+        div.createElement($DOC.sections['fixed-top-bar'], 3);
+    }
     
     function PubSettings() {
         var _this = this;
@@ -67,7 +84,7 @@
                     repo.write(modal.branch.value, names.fileName, data, '---', function(err) {
                         if (err) console.log(err);
                         else
-                            close();
+                            githubCommitSuccess();
                     });
 //            }
                     
