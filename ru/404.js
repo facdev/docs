@@ -29,7 +29,7 @@
                 ._add('h3', 'Через некоторое время (обычно это не больше минуты) новая страница станет доступна в браузере и вы сможете ее отредактировать')
                 .createElement($DOC.sections['fixed-top-bar'], 3);
         var recheck = function() {
-            $.get(location.href, function(data) { location.reload(); });
+            $.get(location.href, function(data) { window.location = location.href + '?edit'; });
         };
         setInterval(recheck, 25000);
         setTimeout(recheck, 10000);
