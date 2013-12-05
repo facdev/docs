@@ -3,36 +3,37 @@
     $('title').text('Запрашиваемая страница не найдена');
 
     $DOC.onload(function() {
-        var div = $DOC.cbody.add('form404:div`mar20');
-        div
-            ._add('h1', 'Запрашиваемая страница не найдена!')
-            ._add('hr')
-            ._add('h3', 'Вы можете создать новую страницу по этому адресу')
-            ._add('create:bootstrap.Button`martop5', 'Добавить страницу в собственном репозитории', function(btn) {
-                btn.listen('click', function() {
-                    PubSettings();
-                });
-            })
-            ._add('br')
-            ._add('fork:bootstrap.Button`martop5', 'Создать Fork этого репозитория');
-        div.createElement($DOC.sections['fixed-top-bar'], 3);
+        $DOC.cbody
+            .add('form404:div`mar20')
+                ._add('h1', 'Запрашиваемая страница не найдена!')
+                ._add('hr')
+                ._add('h3', 'Вы можете создать новую страницу по этому адресу')
+                ._add('create:bootstrap.Button`martop5', 'Добавить страницу в собственном репозитории', function(btn) {
+                    btn.listen('click', function() {
+                        PubSettings();
+                    });
+                })
+                ._add('br')
+                ._add('fork:bootstrap.Button`martop5', 'Создать Fork этого репозитория')
+                .createElement($DOC.sections['fixed-top-bar'], 3);
     });
     
     function githubCommitSuccess() {
         $DOC.cbody.form404
             .deleteAll()
             .remove();
-        var div = $DOC.cbody.add('github_commit:div`mar20');
-        div
-            ._add('h1', 'Новая страница успешно создана!')
-            ._add('hr')
-            ._add('h3', 'Через некоторое время (обычно это не больше минуты) новая страница станет доступна в браузере')
-            ._add('refresh:bootstrap.Button`martop5', 'Перезагрузить эту страницу', function(btn) {
-                btn.listen('click', function() {
-                    location.reload();
-                });
-            });
-        div.createElement($DOC.sections['fixed-top-bar'], 3);
+        $DOC.cbody
+            .add('github_commit:div`mar20')
+                ._add('h1', 'Новая страница успешно создана!')
+                ._add('hr')
+                ._add('h3', 'Через некоторое время (обычно это не больше минуты) новая страница станет доступна в браузере и вы сможете ее отредактировать')
+                .createElement($DOC.sections['fixed-top-bar'], 3);
+        var recheck = function() {
+            $.get(location.href, function(data) { location.reload(); });
+        };
+        setInterval(recheck, 25000);
+        setTimeout(recheck, 10000);
+        setTimeout(recheck, 15000);
     }
     
     function PubSettings() {
@@ -83,8 +84,10 @@
 //            } else {
                     repo.write(modal.branch.value, names.fileName, data, '---', function(err) {
                         if (err) console.log(err);
-                        else
+                        else {
+                            close();
                             githubCommitSuccess();
+                        }
                     });
 //            }
                     
