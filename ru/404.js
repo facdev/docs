@@ -60,6 +60,7 @@
                 
                 // document and root path replace in page template
                 data = data.split('</head>');
+                var add_depth = location.pathname.split('/').length - 3;
                 var root = '';
                 for(var i = 1; i < add_depth; i++)
                     root += '../';
