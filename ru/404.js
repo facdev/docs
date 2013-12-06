@@ -1,5 +1,6 @@
 (function() {
     var repo = 'docs', lang = 'ru';
+    $DOC.options.editable = false;
     $('title').text('Запрашиваемая страница не найдена');
 
     $DOC.onload(function() {
