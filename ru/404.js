@@ -1,6 +1,5 @@
 (function() {
     var repo = 'docs', lang = 'ru';
-//    $DOC.options.editable = false;
     $('title').text('Запрашиваемая страница не найдена');
 
     $DOC.onload(function() {
@@ -47,7 +46,7 @@
         var apikey = modal.apikey.value = sessionStorage.getItem('github-apikey') || '';
             
         var // /repo/path
-            names = getMwFileName({fileName:location.pathname.split('/').slice(2).join('/')});
+            names = getMwFileName({fileName:decodeURIComponent(location.pathname).split('/').slice(2).join('/')});
         modal.path.value = names.fileName;
                 
         
