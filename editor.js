@@ -968,12 +968,12 @@ function initialize() {
         
                 if (!names.fileName)
                     // /repo/path
-                    names = getMwFileName({fileName:location.pathname.split('/').slice(2).join('/')});
+                    names = getMwFileName({fileName:decodeURIComponent(location.pathname).split('/').slice(2).join('/')});
         
             // input settings
             if (force_open || !user || !apikey || !repo || !names.fileName || !branch) {
                 user = user || location.host.split('.')[0];
-                repo = repo || location.pathname.split('/')[1];
+                repo = repo || decodeURIComponent(location.pathname).split('/')[1];
                 branch = branch || 'gh-pages';
                 
                 var modal = $DOC.cbody.github_modal;
