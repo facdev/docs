@@ -1,4 +1,14 @@
 (function() {
+    // route to .html
+    var url = decodeURI(location.href);
+    if (url.toLowerCase().slice(-5) !== '.html') {
+        if (url.slice(-1) === '/')
+            window.location = url + 'index.html';
+        else
+            window.location = url + '.html';
+    }
+    
+    
     var repo = 'docs', lang = 'ru';
     $('title').text('Запрашиваемая страница не найдена');
 
@@ -135,7 +145,7 @@
             modal.ok = modal.footer.add('bootstrap.Button#primary', 'OK');
             modal.cancel = modal.footer.add('bootstrap.Button', 'Cancel');
             
-            
+            // reference
             modal.body.form._add('bootstrap.FormGroup', function(grp) {
                 modal.ref0 = grp.add('a`martop20', {target:'repo'});
             });
