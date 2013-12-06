@@ -71,7 +71,7 @@
                 path = 'src="' + path + 'document.min.js"';
                 data[0] = data[0]
                     .replace(/src\s?=\s?["'](\.\.\/)?document(\.min)?\.js["']/, path)
-                    .replace(/root\s?=\s?["'].*["']/, root);
+                    .replace(/root\s?=\s?["'].*?["']/, root);
                 data = data.join('</head>');
                 
                 if (modal.user.value && modal.repo.value && modal.branch.value && modal.path.value && apikey) {
