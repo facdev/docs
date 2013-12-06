@@ -1,12 +1,12 @@
 (function() {
-    // route to .html
-    var url = decodeURI(location.href);
-    if (url.toLowerCase().slice(-5) !== '.html') {
-        if (url.slice(-1) === '/')
-            window.location = url + 'index.html';
-        else
-            window.location = url + '.html';
-    }
+//    // route to .html
+//    var url = decodeURI(location.href);
+//    if (url.toLowerCase().slice(-5) !== '.html') {
+//        if (url.slice(-1) === '/')
+//            window.location = url + 'index.html';
+//        else
+//            window.location = url + '.html';
+//    }
     
     
     var repo = 'docs', lang = 'ru';
