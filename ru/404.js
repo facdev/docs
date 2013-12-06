@@ -8,13 +8,11 @@
                 ._add('h1', 'Запрашиваемая страница не найдена!')
                 ._add('hr')
                 ._add('h3', 'Вы можете создать новую страницу по этому адресу')
-                ._add('create:bootstrap.Button`martop5', 'Добавить страницу в собственном репозитории', function(btn) {
+                ._add('create:bootstrap.Button`martop5', 'Добавить страницу', function(btn) {
                     btn.listen('click', function() {
                         PubSettings();
                     });
                 })
-                ._add('br')
-                ._add('fork:bootstrap.Button`martop5', 'Создать Fork этого репозитория')
                 .createElement($DOC.sections['fixed-top-bar'], 3);
     });
     
@@ -48,7 +46,8 @@
         var // /repo/path
             names = getMwFileName({fileName:decodeURIComponent(location.pathname).split('/').slice(2).join('/')});
         modal.path.value = names.fileName;
-                
+        
+        
         
         modal.ok.listen('click', function() {
             if (modal.apikey.value !== apikey) {
@@ -83,22 +82,6 @@
                     });
 
                     var repo = githubapi.getRepo(modal.user.value, modal.repo.value);
-                        
-//
-//            if (host.fileMode) {
-//                var html = preview.grabHTML();
-//                    repo.write(modal.branch.value, names.mwFileName, data, '---', function(err) {
-//                        if (err) console.log(err);
-//                    });
-//                // simultaneous api requests not supported, delay 3 sec
-//                setTimeout(function() {
-//                    repo.write(github.branch, names.fileName, html, '---', function(err) {
-//                        if (err) console.log(err);
-//                        else
-//                            close();
-//                    });
-//                }, 3000);
-//            } else {
                     repo.write(modal.branch.value, names.fileName, data, '---', function(err) {
                         if (err) console.log(err);
                         else {
@@ -106,21 +89,8 @@
                             githubCommitSuccess();
                         }
                     });
-//            }
-                    
                 }
-
             });
-            
-//            var github = daoroot.github || (daoroot.github = {});
-//            github.user = modal.user.value || '';
-//            sessionStorage.setItem('github-apikey', modal.apikey.value || ''),
-//            github.repo = modal.repo.value || '';
-//            github.branch = modal.branch.value || 'gh-pages';
-//            daoroot.raise();
-//            daourl.github_path = modal.path.value || '';
-//            daourl.raise();
-//            $(modal.element).modal('hide');
               
         });
         modal.cancel.listen('click', close);
@@ -140,8 +110,8 @@
             var modal = controls.create('bootstrap.modal', {style:'z-index:1200;'});
             modal.close = modal.header.add('button`close', '&times;', {type:'button'});
             modal.header.add('h4`modal-title', 'Publish on GitHub');
-            modal.body
-                .add('bootstrap.Form')
+            var form = modal.body.add('form:bootstrap.Form');
+            form
                 ._add('bootstrap.FormGroup', function(grp) {
                     grp.add('bootstrap.ControlLabel', 'Username:');
                     modal.user = grp.add('bootstrap.ControlInput');
@@ -159,11 +129,25 @@
                     modal.path = grp.add('bootstrap.ControlInput');
                 })
                 ._add('bootstrap.FormGroup', function(grp) {
-                    grp._add('bootstrap.ControlLabel', 'API key:');
+                    grp._add('bootstrap.ControlLabel', 'Personal access token:');
                     modal.apikey = grp.add('bootstrap.ControlInput');
                 });
             modal.ok = modal.footer.add('bootstrap.Button#primary', 'OK');
             modal.cancel = modal.footer.add('bootstrap.Button', 'Cancel');
+            
+            
+            modal.body.form._add('bootstrap.FormGroup', function(grp) {
+                modal.ref0 = grp.add('a`martop20', {target:'repo'});
+            });
+            setInterval(function() {
+                var user = modal.user.value, repo = modal.repo.value;
+                if (user && repo) {
+                    var reporef = 'https://github.com' + '/' + user + '/' + repo;
+                    modal.ref0.text(reporef);
+                    modal.ref0.attr('href', reporef);
+                }
+            }, 977);
+            
             return modal;
         }
     }

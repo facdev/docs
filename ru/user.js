@@ -6,7 +6,6 @@ $DOC.sections['fixed-top-bar'] =
 ***\
 )%navbar';
 
-
 $DOC.sections['header-panel'] =
 '# Markdown webdocs\n\
 Система подготовки веб-справки и документации  \n\
@@ -20,13 +19,14 @@ if ($DOC.options.editable) {
 ***\n\
 * [Редактировать эту страницу](?edit)\
 )%footer-layout';
+
 } else {
+
     $DOC.sections['footer-panel'] =
 '%footer-layout#scheme=line(\
 * © 2013 [aplib on GitHub](https://github.com/aplib/markdown-site-template) Artistic license 2.0\
 )%footer-layout';
-    
+   
 }
-    
-    
+
 })();

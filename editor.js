@@ -1071,7 +1071,7 @@ function initialize() {
                     modal.path = grp.add('bootstrap.ControlInput');
                 })
                 ._add('bootstrap.FormGroup', function(grp) {
-                    grp._add('bootstrap.ControlLabel', 'API key:');
+                    grp._add('bootstrap.ControlLabel', 'Personal access token:');
                     modal.apikey = grp.add('bootstrap.ControlInput');
                 });
             modal.OK = modal.footer.add('bootstrap.Button#primary', 'OK');
