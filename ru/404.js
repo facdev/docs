@@ -41,7 +41,7 @@
         var modal = $DOC.cbody.add(githubSettingsModalForm());
             modal.createElement();
         modal.user.value = location.host.split('.')[0];  
-        modal.repo.value = location.pathname.split('/')[1];
+        modal.repo.value = decodeURIComponent(location.pathname).split('/')[1];
         modal.branch.value = 'gh-pages';
         var apikey = modal.apikey.value = sessionStorage.getItem('github-apikey') || '';
             
