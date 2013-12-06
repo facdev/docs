@@ -1,6 +1,6 @@
 (function() {
     var repo = 'docs', lang = 'ru';
-    $DOC.options.editable = false;
+//    $DOC.options.editable = false;
     $('title').text('Запрашиваемая страница не найдена');
 
     $DOC.onload(function() {
@@ -30,7 +30,7 @@
                 ._add('h3', 'Через некоторое время (обычно это не больше минуты) новая страница станет доступна в браузере и вы сможете ее отредактировать')
                 .createElement($DOC.sections['fixed-top-bar'], 3);
         var recheck = function() {
-            $.get(location.href, function(data) { window.location = location.href + '?edit'; });
+            $.get(location.href, function(data) { window.location = location.href + (location.href.indexOf('?edit') >= 0 ? '' : '?edit'); });
         };
         setInterval(recheck, 25000);
         setTimeout(recheck, 10000);
