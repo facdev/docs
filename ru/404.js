@@ -57,6 +57,22 @@
             }
             
             $.get('/' + repo + '/' + lang + '/page_template.html', function(data) {
+                
+                // document and root path replace in page template
+                data = data.split('</head>');
+                var root = '';
+                for(var i = 1; i < add_depth; i++)
+                    root += '../';
+                root = 'root="' + root + '"';
+                var path = '';
+                for(var i = 0; i < add_depth; i++)
+                    path += '../';
+                path = 'src="' + path + 'document.min.js"';
+                data[0] = data[0]
+                    .replace(/src\s?=\s?["'](\.\.\/)?document(\.min)?\.js["']/, path)
+                    .replace(/root\s?=\s?["'].*["']/, root);
+                data = data.join('</head>');
+                
                 if (modal.user.value && modal.repo.value && modal.branch.value && modal.path.value && apikey) {
                     
                     var githubapi = new window.github_api({
