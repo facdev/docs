@@ -81,8 +81,11 @@ function initialize() {
                 });
 
             // download button
+            var dfname = location.url.split('/').slice(-1)[0];
+            if (dfname.toLowerCase().slice(-5) !== '.html')
+                dfname += '.html';
             save_group.add('download:a`btn btn-default', '<b class="glyphicon glyphicon-save"></b>',
-                {download:(location.url.split('/').slice(-1)[0] || 'document.html'), 'data-original-title':'Download'})
+                {download:(dfname || 'document.html'), 'data-original-title':'Download'})
                 .listen('mousedown', setDataUrl)
                 .listen('focus', setDataUrl)
                 .listen('click', function(event) {
@@ -162,11 +165,11 @@ function initialize() {
                             pubsettings.publish();
                     });
                 });
-            export_group.add('github:bootstrap.Button', {'data-original-title':'Publish settings'})
-                ._icon('cog')
-                .listen('click', function() {
-                    pubsettings.getSettings(true);
-                });
+//            export_group.add('github:bootstrap.Button', {'data-original-title':'Publish settings'})
+//                ._icon('cog')
+//                .listen('click', function() {
+//                    pubsettings.getSettings(true);
+//                });
         });
         
         
@@ -462,18 +465,19 @@ function initialize() {
             update_inner_html = inner_html;
             sections_keys = _sections_keys;
 
-            var doc = this.element && this.element.contentDocument,
+            var element = this.element,
                 $doc = this.$DOC;
-            if (doc && $doc) {
-
-                var html = doc.getElementsByTagName('html')[0];
+            if (element && $doc) {
+                var doc = element.contentDocument,
+                    win = element.contentWindow,
+                    html = doc.getElementsByTagName('html')[0];
                 if (html) {
                     $doc.initialize();
                     // update html
                     html.innerHTML = inner_html;
                     // reproduce document
                     $doc.headTransformation();
-                    if ($doc.options.userjs) {
+                    if (win.$OPT.userjs) {
                         $doc.loadUserJS(); // final transformation started after script loaded
                     } else {
                         setTimeout(function(){
@@ -539,7 +543,7 @@ function initialize() {
                 // decode noscript node
                 .replace(/<noscript>([\s\S]*?)<\/noscript>/g, function(m,innerText) { return '<noscript>' + html_entity_decode(innerText) + '</noscript>'; }),
             pos = html.lastIndexOf('</body>'),
-            cdom = '<script>$DOC.onload(function(){ if ($DOC.options.edit_mode) return;'
+            cdom = '<script>$DOC.onload(function(){ if ($OPT.edit_mode) return;'
              + '($DOC.chead = JSON.parse(unescape("' + escape(JSON.stringify($doc.chead)) + '"), controls.reviverJSON)).attachAll();'
              + '($DOC.cbody = JSON.parse(unescape("' + escape(JSON.stringify($doc.cbody)) + '"), controls.reviverJSON)).attachAll();'
              + '$DOC.vars = JSON.parse(unescape("' + escape(JSON.stringify($doc.vars)) + '"), controls.reviverJSON);'
@@ -971,7 +975,7 @@ function initialize() {
                     names = getMwFileName({fileName:decodeURIComponent(location.pathname).split('/').slice(2).join('/')});
         
             // input settings
-            if (force_open || !user || !apikey || !repo || !names.fileName || !branch) {
+//            if (force_open || !user || !apikey || !repo || !names.fileName || !branch) {
                 user = user || location.host.split('.')[0];
                 repo = repo || decodeURIComponent(location.pathname).split('/')[1];
                 branch = branch || 'gh-pages';
@@ -994,7 +998,6 @@ function initialize() {
                         daoroot.raise();
                         daourl.github_path = modal.path.value || '';
                         daourl.raise();
-                        $(modal.element).modal('hide');
                         if (modal.callback)
                             modal.callback(github.user && github.repo && github.branch && daourl.github_path && modal.apikey.value);
                     });
@@ -1009,12 +1012,13 @@ function initialize() {
                 modal.repo.value = repo;
                 modal.branch.value = branch;
                 modal.path.value = names.fileName;
+                modal.modeCheckbox.checked = host.fileMode;
                 modal.callback = callback;
                 $(modal.element).modal('show');
-            } else {
-                if (callback)
-                    callback(true);
-            }
+//            } else {
+//                if (callback)
+//                    callback(true);
+//            }
         };
         
         this.publish = function() {
@@ -1029,21 +1033,52 @@ function initialize() {
             var repo = githubapi.getRepo(github.user, github.repo),
                 mw_html = controller.buildHTML();
                 var names = getMwFileName({fileName:daourl.github_path});
-
-            if (host.fileMode) {
+            
+            var modal = $DOC.cbody.github_modal;
+            if (modal.modeCheckbox.checked) {
                 var html = preview.grabHTML();
                 repo.write(github.branch, names.mwFileName, mw_html, '---', function(err) {
                     if (err) console.log(err);
+                    else {
+                        // simultaneous api requests not supported, delay 3 sec
+                        setTimeout(function() {
+                            repo.write(github.branch, names.fileName, html, '---', function(err) {
+                                if (err) {
+                                    setTimeout(function() {
+                                        repo.write(github.branch, names.fileName, html, '---', function(err) {
+                                            if (err) console.log(err);
+                                            else
+                                                $(modal && modal.element).modal('hide');
+                                        });
+                                    }, 3000);
+                                } else
+                                    $(modal && modal.element).modal('hide');
+                            });
+                        }, 3000);
+                    }
                 });
-                // simultaneous api requests not supported, delay 3 sec
-                setTimeout(function() {
-                    repo.write(github.branch, names.fileName, html, '---', function(err) {
-                        if (err) console.log(err);
-                    });
-                }, 3000);
             } else {
+                // 2. write .html
                 repo.write(github.branch, names.fileName, mw_html, '---', function(err) {
                     if (err) console.log(err);
+                    else {
+                        // 3. delete .mw.html
+                        setTimeout(function() {
+                            repo.removeFile(github.branch, names.mwFileName, function(err) {
+                                if (err && err !== 404) {
+                                    setTimeout(function() {
+                                        repo.removeFile(github.branch, names.mwFileName, function(err) {
+                                            if (err && err !== 404)
+                                                console.log(err);
+                                            else
+                                                $(modal && modal.element).modal('hide');
+                                        });
+                                    }, 3000);
+                                } else
+                                    $(modal && modal.element).modal('hide');
+                            });
+                        }, 3000);
+                    }
                 });
             }
         };
@@ -1052,8 +1087,8 @@ function initialize() {
             var modal = controls.create('bootstrap.modal', {style:'z-index:1200;', disabled:true});
             modal.close = modal.header.add('button`close', '&times;', {type:'button'});
             modal.header.add('h4`modal-title', 'Publish on GitHub');
-            modal.body
-                .add('bootstrap.Form')
+            var form = modal.body.add('form:bootstrap.Form');
+            form
                 ._add('bootstrap.FormGroup', function(grp) {
                     grp.add('bootstrap.ControlLabel', 'Username:');
                     modal.user = grp.add('bootstrap.ControlInput');
@@ -1071,11 +1106,33 @@ function initialize() {
                     modal.path = grp.add('bootstrap.ControlInput');
                 })
                 ._add('bootstrap.FormGroup', function(grp) {
-                    grp._add('bootstrap.ControlLabel', 'Personal access token:');
+                    grp._add('bootstrap.ControlLabel', 'Personal access token or password:');
                     modal.apikey = grp.add('bootstrap.ControlInput');
                 });
             modal.OK = modal.footer.add('bootstrap.Button#primary', 'OK');
             modal.Cancel = modal.footer.add('bootstrap.Button', 'Cancel');
+            
+            // compile to .html checkbox
+            modal.modeCheckbox = 
+                form.add('bootstrap.FormGroup')
+                    .add('bootstrap.ControlCheckbox`martop20', {$text:'Compile to html'});
+            
+            // reference
+            modal.ref0 = 
+                form.add('bootstrap.FormGroup')
+                    .add('a`martop20', {target:'repo'});
+            setInterval(function() {
+                var user = modal.user.value, repo = modal.repo.value;
+                if (user && repo) {
+                    var reporef = 'https://github.com' + '/' + user + '/' + repo;
+                    modal.ref0
+                        ._text(reporef)
+                        ._attr('href', reporef);
+                }
+            }, 977);
+            
+            
+            
             return modal;
         }
     }
@@ -1086,10 +1143,10 @@ function initialize() {
             return data;
         // location != *.html
         if (fileName.slice(-5) !== '.html') {
-            return getMwFileName({fileName:fileName + '.html'});
-        }
+            data.fileName += '.html';
+            return getMwFileName(data);
         // location == *.mw.html
-        else if (fileName.slice(-8) === '.mw.html') {
+        } else if (fileName.slice(-8) === '.mw.html') {
             fileName = fileName.slice(0, fileName.length - 8);
             mwFileName = fileName + '.mw.html';
             fileName += '.html';
@@ -1114,8 +1171,7 @@ function initialize() {
         this.path = url.slice(0, sep + 1);
         this.fileName = url.slice(sep + 1);
         getMwFileName(this);
-
-        
+        var _this = this;
         
         // node-webkit
         if (typeof nwDispatcher !== 'undefined' && location.protocol === 'file:') {
@@ -1184,12 +1240,13 @@ function initialize() {
                 /* Can not get .mw file and handle errors in 'file:' mode. */
                 this.errorState = 1;
             var host = this;
-            $.ajax({url:this.path + this.mwFileName, type:'GET', dataType:'html', async:0})
+            $.ajax({url:_this.path + _this.mwFileName, type:'GET', dataType:'html', async:0})
                 .done(function(data) {
                     host.mwHtml = data.replace(/\r/g, '');
+                    host.fileMode = 1;
                 })
                 .fail(function(e, status, xhr) {
-                    $.ajax({url:this.path + this.fileName, type:'GET', dataType:'html', async:0})
+                    $.ajax({url:_this.path + _this.fileName, type:'GET', dataType:'html', async:0})
                         .done(function(data) {
                             // html can be mw
                             host.mwHtml = data.replace(/\r/g, '');
@@ -1818,9 +1875,9 @@ function initialize() {
         };
 
         _request("POST", repoPath + "/git/commits", data, function(err, res) {
-          currentTree.sha = res.sha; // update latest commit
+          currentTree.sha = /*!Ad 422 -> res === undefined fixed*/res &&       res.sha; // update latest commit
           if (err) return cb(err);
-          cb(null, res.sha);
+          cb(null, /*!Ad fixed*/res &&       res.sha);
         });
       };
 
@@ -1933,11 +1990,15 @@ function initialize() {
         updateTree(branch, function(err, latestCommit) {
           that.getTree(latestCommit+"?recursive=true", function(err, tree) {
             // Update Tree
-            var newTree = _.reject(tree, function(ref) { return ref.path === path; });
-            _.each(newTree, function(ref) {
-              if (ref.type === "tree") delete ref.sha;
-            });
-
+            //!Ad undescore 'fixed'
+            var newTree = tree.filter(function(ref) { return ref.path !== path; });
+            newTree.forEach(function(ref) { if (ref.type === "tree") delete ref.sha; });
+            //!Ad
+            if (tree.length === newTree.length)
+                cb(404/*not found*/);
+                        
+             
+              
             that.postTree(newTree, function(err, rootTree) {
               that.commit(latestCommit, rootTree, 'Deleted '+path , function(err, commit) {
                 that.updateHead(branch, commit, function(err) {
@@ -1948,6 +2009,25 @@ function initialize() {
           });
         });
       };
+      
+    //!Ad
+    this.removeFile = function(branch, path, cb) {
+        updateTree(branch, function(err, latestCommit) {
+            that.getTree(latestCommit+"?recursive=true", function(err, tree, res) {
+                if (!tree || !tree.some(function(ref) {
+                    if (ref.path === path && ref.type === 'blob') {
+                        var data = {path: ref.path, message: '---', sha: ref.sha, branch: branch};
+                        _request("DELETE", repoPath + "/contents/" + path, data, function(err, res) {
+                            if (err) return cb(err);
+                            cb(null, res.sha);
+                        });
+                        return true;
+                    }
+                }))
+                    cb(null);
+            });
+        });
+    };
 
       // Move a file to a new location
       // -------

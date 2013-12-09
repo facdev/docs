@@ -1,15 +1,5 @@
 (function() {
-//    // route to .html
-//    var url = decodeURI(location.href);
-//    if (url.toLowerCase().slice(-5) !== '.html') {
-//        if (url.slice(-1) === '/')
-//            window.location = url + 'index.html';
-//        else
-//            window.location = url + '.html';
-//    }
-    
-    
-    var repo = 'docs', lang = 'ru';
+    var repo = 'docs.ru', lang = '';
     $('title').text('Запрашиваемая страница не найдена');
 
     $DOC.onload(function() {
@@ -65,15 +55,17 @@
                 sessionStorage.setItem('github-apikey', apikey);
             }
             
-            $.get('/' + repo + '/' + lang + '/page_template.html', function(data) {
+            $.get('/' + repo + (lang ? ('/' + lang) : '') + '/page_template.html', function(data) {
                 
                 // document and root path replace in page template
                 data = data.split('</head>');
                 var add_depth = location.pathname.split('/').length - 3;
+                
                 var root = '';
                 for(var i = 1; i < add_depth; i++)
                     root += '../';
                 root = 'root="' + root + '"';
+                if (!lang) add_depth--;
                 var path = '';
                 for(var i = 0; i < add_depth; i++)
                     path += '../';
