@@ -12,7 +12,7 @@ $DOC.sections['header-panel'] =
 Редактор документов с Markdown разметкой';
 
 
-if ($DOC.options.editable) {
+if ($OPT.editable) {
     $DOC.sections['footer-panel'] =
 '%footer-layout#scheme=line(\
 * © 2013 [aplib on GitHub](https://github.com/aplib/markdown-site-template) Artistic license 2.0\n\
