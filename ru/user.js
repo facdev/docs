@@ -1,10 +1,10 @@
 (function() {
 
 $DOC.sections['fixed-top-bar'] = 
-'%navbar(\
+'[navbar]\
 [Главная]({{=$DOC.root}}index.html)\n\
 ***\
-)%navbar';
+[/navbar]';
 
 $DOC.sections['header-panel'] =
 '# Markdown webdocs\n\
@@ -14,18 +14,18 @@ $DOC.sections['header-panel'] =
 
 if ($OPT.editable) {
     $DOC.sections['footer-panel'] =
-'%footer-layout#scheme=line(\
+'[footer-layout scheme=line]\
 * © 2013 [aplib on GitHub](https://github.com/aplib/markdown-site-template) Artistic license 2.0\n\
 ***\n\
 * [Редактировать эту страницу](?edit)\
-)%footer-layout';
+[/footer-layout]';
 
 } else {
 
     $DOC.sections['footer-panel'] =
-'%footer-layout#scheme=line(\
+'[footer-layout scheme=line]\
 * © 2013 [aplib on GitHub](https://github.com/aplib/markdown-site-template) Artistic license 2.0\
-)%footer-layout';
+[/footer-layout]';
    
 }
 

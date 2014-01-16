@@ -3,10 +3,10 @@
 $DOC.parseContent(function(){/*
 
 <!--fixed-top-bar
-%navbar(
+[navbar]
 [Home]({{=$DOC.root}}index.html)
 ***
-)%navbar
+[/navbar]
 -->
 
 <!--header-panel
@@ -17,11 +17,11 @@ Editing Markdown documents with preview
 -->
 
 <!--footer-panel
-%footer-layout#scheme=line(
+[footer-layout scheme=line]
 * © 2013 [aplib on GitHub](https://github.com/aplib/markdown-site-template) Artistic license 2.0
 ***
 * [Редактировать эту страницу](?edit)
-)%footer-layout
+[/footer-layout]
 -->
 
 */});
