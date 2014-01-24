@@ -1,5 +1,5 @@
 (function() {
-    var repo = 'docs.ru', lang = '';
+    var repo = 'docs', lang = '';
     $('title').text('Запрашиваемая страница не найдена');
 
     $DOC.onload(function() {
@@ -55,7 +55,7 @@
                 sessionStorage.setItem('github-apikey', apikey);
             }
             
-            $.get('/' + repo + (lang ? ('/' + lang) : '') + '/page_template.html', function(data) {
+            $.get('/' + repo + '/page_template.html', function(data) {
                 
                 // document and root path replace in page template
                 data = data.split('</head>');
