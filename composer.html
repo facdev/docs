@@ -13,13 +13,330 @@
 
 
 <!--content-panel
-Новая страница
+Sites
+=============
+
+See http://getcomposer.org/doc/articles/handling-private-packages-with-satis.md#setup
+
+## satis.json
+
+	{
+	    "name": "My Repository",
+	    "homepage": "http://packages.example.org",
+	    "repositories": [
+	        { "type": "vcs", "url": "http://github.com/mycompany/privaterepo" },
+	        { "type": "vcs", "url": "http://svn.example.org/private/repo" },
+	        { "type": "vcs", "url": "http://github.com/mycompany/privaterepo2" }
+	    ],
+	    "require-all": true
+	}
 
 
- -->
+## Usage
+
+
+	{
+	    "repositories": [ { "type": "composer", "url": "http://packages.example.org/" } ],
+	    "require": {
+	        "company/package": "1.2.0",
+	        "company/package2": "1.5.2",
+	        "company/package3": "dev-master"
+	    }
+	}
+
+
+--------
+
+# Smarty
+
+{
+    "repositories": [
+        {
+            "type": "package",
+            "package": {
+                "name": "smarty/smarty",
+                "version": "3.1.7",
+                "dist": {
+                    "url": "http://www.smarty.net/files/Smarty-3.1.7.zip",
+                    "type": "zip"
+                },
+                "source": {
+                    "url": "http://smarty-php.googlecode.com/svn/",
+                    "type": "svn",
+                    "reference": "tags/Smarty_3_1_7/distribution/"
+                },
+                "autoload": {
+                    "classmap": ["libs/"]
+                }
+            }
+        }
+    ],
+    "require": {
+        "smarty/smarty": "3.1.*"
+    }
+}
+
+# Autoload
+
+See http://getcomposer.org/doc/04-schema.md#authors
+
+Autoload mapping for a PHP autoloader.
+
+Currently PSR-0 autoloading, PSR-4 autoloading, classmap generation and files includes are supported. PSR-4 is the recommended way though since it offers greater ease of use (no need to regenerate the autoloader when you add classes).
+
+### PSR-4
+
+Under the psr-4 key you define a mapping from namespaces to paths, relative to the package root. When autoloading a class like ``Foo\\Bar\\Baz`` a namespace prefix ``Foo\\`` pointing to a directory ``src/`` means that the autoloader will look for a file named ``src/Bar/Baz.php`` and include it if present. Note that as opposed to the older PSR-0 style, the prefix (``Foo\\``) is not present in the file path.
+
+Namespace prefixes must end in ``\\`` to avoid conflicts between similar prefixes. For example Foo would match classes in the FooBar namespace so the trailing backslashes solve the problem: ``Foo\\`` and ``FooBar\\`` are distinct.
+
+The PSR-4 references are all combined, during install/update, into a single key => value array which may be found in the generated file ``vendor/composer/autoload_psr4.php``.
+
+Example:
+
+    {
+        "autoload": {
+            "psr-4": {
+                "Monolog\\": "src/",
+                "Vendor\\Namespace\\": "",
+            }
+        }
+    }
+
+If you need to search for a same prefix in multiple directories, you can specify them as an array as such:
+
+    {
+        "autoload": {
+            "psr-4": { "Monolog\\": ["src/", "lib/"] }
+        }
+    }
+
+If you want to have a fallback directory where any namespace will be looked for, you can use an empty prefix like:
+
+    {
+        "autoload": {
+            "psr-4": { "": "src/" }
+        }
+    }
+
+
+### PSR-0
+
+Under the psr-0 key you define a mapping from namespaces to paths, relative to the package root. Note that this also supports the PEAR-style non-namespaced convention.
+
+Please note namespace declarations should end in ``\\`` to make sure the autoloader responds exactly. For example Foo would match in ``FooBar`` so the trailing backslashes solve the problem: ``Foo\\`` and ``FooBar\\`` are distinct.
+
+The PSR-0 references are all combined, during install/update, into a single key => value array which may be found in the generated file ``vendor/composer/autoload_namespaces.php``.
+
+Example:
+
+    {
+        "autoload": {
+            "psr-0": {
+                "Monolog\\": "src/",
+                "Vendor\\Namespace\\": "src/",
+                "Vendor_Namespace_": "src/"
+            }
+        }
+    }
+
+
+If you need to search for a same prefix in multiple directories, you can specify them as an array as such:
+
+    {
+        "autoload": {
+            "psr-0": { "Monolog\\": ["src/", "lib/"] }
+        }
+    }
+
+
+The PSR-0 style is not limited to namespace declarations only but may be specified right down to the class level. This can be useful for libraries with only one class in the global namespace. If the php source file is also located in the root of the package, for example, it may be declared like this:
+
+    {
+        "autoload": {
+            "psr-0": { "UniqueGlobalClass": "" }
+        }
+    }
+
+
+If you want to have a fallback directory where any namespace can be, you can use an empty prefix like:
+
+    {
+        "autoload": {
+            "psr-0": { "": "src/" }
+        }
+    }
+
+
+### Classmap
+
+The classmap references are all combined, during install/update, into a single key => value array which may be found in the generated file ``vendor/composer/autoload_classmap.php``. This map is built by scanning for classes in all .php and .inc files in the given directories/files.
+
+You can use the classmap generation support to define autoloading for all libraries that do not follow PSR-0/4. To configure this you specify all directories or files to search for classes.
+
+Example:
+
+    {
+        "autoload": {
+            "classmap": ["src/", "lib/", "Something.php"]
+        }
+    }
+
+
+### Files
+
+If you want to require certain files explicitly on every request then you can use the 'files' autoloading mechanism. This is useful if your package includes PHP functions that cannot be autoloaded by PHP.
+
+Example:
+
+    {
+        "autoload": {
+            "files": ["src/MyLibrary/functions.php"]
+        }
+    }
+
+
+### include-path
+
+> DEPRECATED: This is only present to support legacy projects, and all new code should preferably use autoloading. As such it is a deprecated practice, but the feature itself will not likely disappear from Composer.
+
+A list of paths which should get appended to PHP's include_path.
+
+Example:
+
+    {
+        "include-path": ["lib/"]
+    }
+
+
+Optional.
+
+### target-dir
+
+> DEPRECATED: This is only present to support legacy PSR-0 style autoloading, and all new code should preferably use PSR-4 without target-dir and projects using PSR-0 with PHP namespaces are encouraged to migrate to PSR-4 instead.
+
+Defines the installation target.
+
+In case the package root is below the namespace declaration you cannot autoload properly. target-dir solves this problem.
+
+An example is Symfony. There are individual packages for the components. The Yaml component is under ``Symfony\Component\Yaml``. The package root is that Yaml directory. To make autoloading possible, we need to make sure that it is not installed into ``vendor/symfony/yaml``, but instead into ``vendor/symfony/yaml/Symfony/Component/Yaml``, so that the autoloader can load it from ``vendor/symfony/yaml``.
+
+To do that, autoload and target-dir are defined as follows:
+
+    {
+        "autoload": {
+            "psr-0": { "Symfony\\Component\\Yaml\\": "" }
+        },
+        "target-dir": "Symfony/Component/Yaml"
+    }
+
+Optional.
+
+
+
+packagist
+=========
+
+
+### packages
+
+	{
+	    "packages": {
+	        "vendor/package-name": {
+	            "dev-master": { @composer.json },
+	            "1.0.x-dev": { @composer.json },
+	            "0.0.1": { @composer.json },
+	            "1.0.0": { @composer.json }
+	        }
+	    }
+	}
+
+
+### packages type
+
+	{
+	    "repositories": [
+	        {
+	            "type": "composer",
+	            "url": "http://packages.example.com"
+	        },
+	        {
+	            "type": "composer",
+	            "url": "https://packages.example.com",
+	            "options": {
+	                "ssl": {
+	                    "verify_peer": "true"
+	                }
+	            }
+	        },
+	        {
+	            "type": "vcs",
+	            "url": "https://github.com/Seldaek/monolog"
+	        },
+	        {
+	            "type": "pear",
+	            "url": "http://pear2.php.net"
+	        },
+	        {
+	            "type": "package",
+	            "package": {
+	                "name": "smarty/smarty",
+	                "version": "3.1.7",
+	                "dist": {
+	                    "url": "http://www.smarty.net/files/Smarty-3.1.7.zip",
+	                    "type": "zip"
+	                },
+	                "source": {
+	                    "url": "http://smarty-php.googlecode.com/svn/",
+	                    "type": "svn",
+	                    "reference": "tags/Smarty_3_1_7/distribution/"
+	                }
+	            }
+	        }
+	    ]
+	}
+	
+### repo for bitbucket.org
+
+	{
+	    "require": {
+	        "vendor/my-private-repo": "dev-master"
+	    },
+	    "repositories": [
+	        {
+	            "type": "vcs",
+	            "url":  "git@bitbucket.org:vendor/my-private-repo.git"
+	        }
+	    ]
+	}
+	
+
+### PEAR
+
+	{
+	    "repositories": [
+	        {
+	            "type": "git",
+	            "url": "https://github.com/foobar/intermediate.git"
+	        },
+	        {
+	            "type": "pear",
+	            "url": "http://pear.foobar.repo",
+	            "vendor-alias": "foobar"
+	        }
+	    ],
+	    "require": {
+	        "foobar/TopLevelPackage1": "*",
+	        "foobar/TopLevelPackage2": "*"
+	    }
+	}
+	
+-->
+
 
 <!--right-side-panel -->
 
 <noscript><div class="alert alert-warning"><h3>Для просмотра этого сайта необходимо включить JavaScript в вашем браузере</h3></div></noscript>
+
 </body>
 </html>
