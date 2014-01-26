@@ -16,6 +16,7 @@ if ($OPT.editable) {
     $DOC.sections['footer-panel'] =
 '[footer-layout scheme=line]\
 * © 2013 [aplib on GitHub](https://github.com/aplib/markdown-site-template) Artistic license 2.0\n\
+* [repo on GitHub](https://github.com/facdev/docs)\n\
 ***\n\
 * [Редактировать эту страницу](?edit)\
 [/footer-layout]';
