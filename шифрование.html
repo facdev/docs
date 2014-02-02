@@ -13,13 +13,205 @@
 
 
 <!--content-panel
-Новая страница
+# OpenSSL
+
+## Введение
+
+**OpenSSL** - это мощный криптографический инструментарий. 
+Многие из нас уже использовали OpenSSL для создания приватных ключей RSA или CSR (Certificate Signing Request). 
+Однако знаете ли вы, что с помощью OpenSSL можно тестировать производительность вашего компьютера, а также шифровать файлы и сообщения? 
+В этой статье мы рассмотрим простые примеры применения OpenSSL для шифрования файлов и сообщений.
 
 
- -->
+## Шифрование и дешифровка сообщений
+
+Мы начнем с шифрования простых сообщений. Приведенная ниже команда шифрует сообщение "Welcome to LinuxCareer.com", используя Base64 Encoding:
+
+    $ echo "Welcome to LinuxCareer.com" | openssl enc -base64
+    V2VsY29tZSB0byBMaW51eENhcmVlci5jb20K
+
+Вывод команды представляет собой шифр, содержащий сообщение "Welcome to LinuxCareer.com". Для расшифровки этой строки используется та же команда с опцией -d:
+
+    $ echo "V2VsY29tZSB0byBMaW51eENhcmVlci5jb20K" | openssl enc -base64 -d
+    Welcome to LinuxCareer.com
+
+Описанный выше алгоритм шифрования прост в использовании, однако его важным недостатком является отсутствие пароля шифрования. 
+Например, попробуйте расшифровать следующую строку, используя пароль "pass":
+
+    U2FsdGVkX181xscMhkpIA6J0qd76N/nSjjTc9NrDUC0CBSLpZQxQ2Db7ipd7kexj
+    
+    
+Для этого снова используется OpenSSL с опцией -d и методом шифрования aes-256-cbc:
+
+Как вы уже наверное догадались, для создания зашифрованного с паролем сообщения вы можете использовать следующую команду:
+
+    $ echo "OpenSSL" | openssl enc -aes-256-cbc -a enter aes-256-cbc encryption password:
+    Verifying - enter aes-256-cbc encryption password:
+    U2FsdGVkX185E3H2me2D+qmCfkEsXDTn8nCn/4sblr8=
+    
+Если вы хотите выводить зашифрованные сообщения в файл вместо STDOUT, просто перенаправляйте вывод с помощью ">". 
+При сохранении шифра в файле, вы можете опустить опцию -a, так как вам больше не нужен вывод в виде ASCII-текста:
+
+    $ echo "OpenSSL" | openssl enc -aes-256-cbc > openssl.dat
+    enter aes-256-cbc encryption password:
+    Verifying - enter aes-256-cbc encryption password:
+    $ file openssl.dat 
+    openssl.dat: data
+    
+Для расшифровки файла openssl.dat используем команду:
+
+    $ openssl enc -aes-256-cbc -d -in openssl.dat 
+    enter aes-256-cbc decryption password:
+    OpenSSL
+
+
+## Шифрование и дешифровка файлов
+
+Шифровать файлы с OpenSSL так же просто, как и сообщения. 
+Единственное отличие в том, что вместо команды echo используется опция -in, чтобы задать исходный файл, и опция -out, чтобы задать имя, под которым будет сохранен зашифрованный файл:
+
+    $ openssl enc -aes-256-cbc -in /etc/services -out services.dat
+    
+расшифровка нашего файла:
+
+    $ openssl enc -aes-256-cbc -d -in services.dat > services.txt
+    enter aes-256-cbc decryption password:
+
+
+---
+
+# GPG
+
+
+## Как шифровать файлы с помощью GPG в Linux
+
+
+В статье показано как легко и просто зашифровать любой файл с помощью криптографии GnuPG. Это может быть очень полезно для файлов в которых хранятся пароли или какая-либо личная информация.
+
+GNU Privacy Guard (GnuPG или GPG) распространяется по лицензия GPL. Совместим с текущим стандартам RFC 4880 спецификации OpenPGP.
+
+### Вариант 1 — Шифрование с симметрическим ключом
+
+Это самый простой способ. Для шифрования файла нужно ввести пароль, и этот же пароль для расшифровки. К примеру возьмем файл file.txt в котором записана информация 1234.
+
+Для шифрования файла Используем опцию -с или --symmetric:
+
+
+    gpg -c file.txt 
+
+
+Получим:
+
+
+    gpg: directory `/root/.gnupg' created
+    gpg: new configuration file `/root/.gnupg/gpg.conf' created
+    gpg: WARNING: options in `/root/.gnupg/gpg.conf' are not yet active during this run
+    gpg: keyring `/root/.gnupg/pubring.gpg' created
+
+
+
+На этом компьютере — это было самый первый запуск GPG. Потому был создан каталог /root/.gnupg. Как только был введен 2 раза пароль создастся новый файл:
+
+
+    ls -l
+
+
+Увидим файлы:
+
+
+    -rw-r--r--  1 root   root  file.txt
+    -rw-r--r--  1 root   root  file.txt.gpg
+
+
+Теперь можно перемещать созданный gpg файл, а открытый текст удалить. Открывается зашифрованный файл командой с опцией -d:
+
+
+    gpg -d file.txt.gpg
+
+
+
+Получим в терминал:
+
+
+    gpg: keyring `/root/.gnupg/secring.gpg' created
+    gpg: CAST5 encrypted data
+    gpg: gpg-agent is not available in this session
+    gpg: encrypted with 1 passphrase
+    secret 1234
+    gpg: WARNING: message was not integrity protected
+
+
+Для записи информации в файл можно использовать опцию -o:
+
+
+    gpg -o newfile.txt -d file.txt.gpg 
+
+
+Проверяем:
+
+    ls -l
+
+    -rw-r--r-- 1 root root newfile.txt
+    -rw-r--r-- 1 root root file.txt
+    -rw-r--r-- 1 root root file.txt.gpg
+
+    cat newfile.txt
+
+    1234
+
+
+### Вариант 2 — Шифрование с открытым/закрытым ключом
+
+Существует и другой подход к шифрованию. GPG нам позволяет использовать ключи шифрования для операций с файлами на Windows и Linux. Преимущество — вы можете сохранить открытый ключ и использовать его в любом месте. Нам надо будет использовать сертификат, который состоит из двух различных ключей private и public.
+
+**Private** ключ должен оставаться исключительно у владельца сертификата. Он будет использоваться для расшифровки файлов, которые отправлены через почту, FTP или HTTP.
+
+**Public** ключ может быть дан кому нужно. Он будет использоваться для шифрования файлов на имя владельца сертификата. Только владелец private ключа сможет расшифровать отправленный файл.
+
+Ключи можно сгенирировать с помощью опции --gen-key:
+
+    gpg --gen-key
+
+
+Посмотреть все ключи можно при помощи опции --list-keys или --list-secret-keys.
+
+#### Шифрование с puclic ключом
+
+Теперь можно попробовать зашифровать файл при помощи открытого ключа:
+
+    gpg -e -r admin@site.com file.txt
+
+
+Получим файл с именем file.txt.gpg. Опции -e -r означают:
+
+- **-е** — шифрование данных.
+- **-r** — шифрование с ID пользователя. Если эта опция не указана — GnuPG запросит у вас эту информацию.
+
+#### Расшифровка с помощью Private ключа
+
+Для расшифровки файла можно использовать опции -d и -о:
+
+    gpg -d file.txt.gpg -o newfile.txt
+
+
+#### Импорт новых ключей
+
+Для шифрования файла нужно уметь импортировать открытые ключи:
+
+    gpg --import KEYFILE
+
+
+Чтобы добавить ключ в доверенные. Выполните:
+
+    gpg --edit-key NAME
+
+
+Через время вас спросят «trust: undefined validity: unknown». Введите trust. Для выхода из консоли введите quit.-->
+
 
 <!--right-side-panel -->
 
 <noscript><div class="alert alert-warning"><h3>Для просмотра этого сайта необходимо включить JavaScript в вашем браузере</h3></div></noscript>
+
 </body>
 </html>
