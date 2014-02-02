@@ -35,12 +35,35 @@ Last commit date: $Format:Tue Apr 21 08:38:48 2009 -0700$
 $ echo '*.txt ident' >> .gitattributes
 $ echo '$Id$' > test.txt
 $ git add test.txt
-```-->
+```
+
+---
+
+#### Копия репозитория
+
+```bash
+git clone --bare https://github.com/exampleuser/old-repository.git
+# Make a bare clone of the repository
+
+cd old-repository.git
+git push --mirror https://github.com/exampleuser/new-repository.git
+# Mirror-push to the new repository
+
+cd ..
+rm -rf old-repository.git
+# Remove our temporary local repository
+```
+
+В буфер
+
+    xclip -sel clip < ~/.ssh/facdev_rsa.pub-->
+
 
 
 <!--right-side-panel -->
 
 <noscript><div class="alert alert-warning"><h3>Для просмотра этого сайта необходимо включить JavaScript в вашем браузере</h3></div></noscript>
+
 
 </body>
 </html>
