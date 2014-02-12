@@ -18,8 +18,124 @@
 
  -->
 
-<!--right-side-panel -->
+<!--right-side-panel
+# PHP. Экспорт в Excel.
+---------
+
+Отчеты в виде HTML-таблицы очень удобны. Но анализировать такие таблицы довольно затруднительно. Поэтому целесообразно использовать Excel-таблицы. Как вывести HTML-таблицу в Excel-файл? Этот вопрос рано или поздно задает себе любой разработчик веб-приложений.
+
+Существует несколько подходов для выполнения подобной задачи: использование классов для экспорта, PEAR-расширение и т. д. В статье рассмотрен наиболее простой и быстрый способ экспорта в Excel - это использование HTTP-заголовков.
+
+Простейший пример приведен ниже в листинге:
+
+Экспорт в Excle
+```
+<?php 
+header("Content-type: application/vnd.ms-excel"); 
+header("Content-disposition: attachment; filename=report_".date("Y-m-d").".xls"); 
+?> 
+```
+Первая строка задает содержимое страницы - приложение ms.excel. Во второй строке содержится заголовок (`Content-Disposition: attachment;`), который заставляет браузер показать диалог сохранения файла или загрузить файл на жесткий диск (в зависимости от настроек браузера) и указывает имя файла (filename="report_` . date("Y-m-d") . `.xls"`).
+
+Но прописать заголовки - это еще далеко не все. При таком выводе большие числа будут переведены в экспоненциальный вид, ведущие нули будут стерты, формат даты будет нарушен и т. д.
+
+Чтобы избежать подобной ситуации необходимо добавить определенные стили к странице. Стили указаны в листинге ниже.
+
+Стили для экспорта
+```
+<style> 
+     br { 
+         mso-data-placement:same-cell; 
+     } 
+     .style0 { 
+        mso-number-format:General; 
+        white-space:nowrap; 
+        mso-style-id:0; 
+    } 
+    td { 
+        mso-style-parent:style0; 
+        mso-number-format:"@"; 
+        text-align: left; 
+    } 
+    td.date { 
+        mso-number-format:"dd.mm.yyyy"; 
+    } 
+    td.time { 
+        mso-number-format:"[h]:mm:ss"; 
+    } 
+    .number { 
+        mso-number-format:"0"; 
+    } 
+</style> 
+```
+Первый стиль указывает, что переходы на следующую строку осуществляются в одной ячейке, т. е. при переходе на новую строку не происходит переход в новую ячейку. Второй и третий стили задают формат ячейки. Стиль td.date задает стиль для ячеек, в которых содержится дата, td.time - для ячеек со временем, .number - для ячеек в числовом формате.
+
+Ниже приведен полный пример использования заголовков и стилей.
+
+Полный пример
+````
+<?php  
+header("Content-type: application/vnd.ms-excel");  
+header("Content-disposition: attachment; filename=report_".date("Y-m-d").".xls");  
+?>  
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"> 
+<html xmlns="http://www.w3.org/1999/xhtml"> 
+<head> 
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" /> 
+<title>Пример</title> 
+<style>  
+     br {  
+         mso-data-placement:same-cell;  
+     }  
+     .style0 {  
+        mso-number-format:General;  
+        white-space:nowrap;  
+        mso-style-id:0;  
+    }  
+    td {  
+        mso-style-parent:style0;  
+        mso-number-format:"@";  
+        text-align: left;  
+    }  
+    td.date {  
+        mso-number-format:"dd.mm.yyyy";  
+    }  
+    td.time {  
+        mso-number-format:"[h]:mm:ss";  
+    }  
+    .number {  
+        mso-number-format:"0";  
+    }  
+</style>  
+</head> 
+
+<body> 
+<table width="200" border="1"> 
+  <tr> 
+    <td>№</td> 
+    <td>Товар</td> 
+    <td>Количество</td> 
+    <td>Цена</td> 
+  </tr> 
+  <tr> 
+    <td>1</td> 
+    <td>Молоко</td> 
+    <td>2</td> 
+    <td>18-00</td> 
+  </tr> 
+  <tr> 
+    <td>2</td> 
+    <td>Хлеб</td> 
+    <td>3</td> 
+    <td>20-00</td> 
+  </tr> 
+</table> 
+</body> 
+</html>
+````-->
+
 
 <noscript><div class="alert alert-warning"><h3>Для просмотра этого сайта необходимо включить JavaScript в вашем браузере</h3></div></noscript>
+
 </body>
 </html>
