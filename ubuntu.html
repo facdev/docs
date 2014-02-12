@@ -2,7 +2,7 @@
 <html lang="ru-RU">
 <head>
     <meta charset="utf-8">
-    <title>Markdown webdocs</title>
+    <title>Ubuntu</title>
     <script root="" src="/docs/document.min.js" userjs="user.js" icon="favicon.ico" id="DOC" onerror="var l=document.createElement('link'),s=document.createElement('script');l.rel='stylesheet';l.href='http://netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css';l.id='bootstrap.css';l.auto='1';document.head.insertBefore(l,document.getElementById('DOC'));s.src='http://aplib.github.io/document.min.js';document.head.appendChild(s);"></script>
     
     <link rel="stylesheet" href="/styles/highlight/default.css">
@@ -16,10 +16,135 @@
 Новая страница
 
 
- -->
+ Tried this:
+
+    $ unity --reset
+
+This command hangs up on 'Setting Update "run_key"'
+
+Also tried this:
+
+    $ ccmd
+
+Unity plugin was disabled. I enabled it and rebooted. But still no luck.
+
+Also tried this:
+
+    $ rm -rf ~/.config/compiz-1/compizconfig/*
+    $ rm -rf .compiz-1
+    $ sudo apt-get purge compizconfig-settings-manager
+
+Nothing happened.
+
+Also tried this:
+
+    $ sudo apt-get install --reinstall ubuntu-desktop
+
+    Reading package lists... Done
+    Building dependency tree       
+    Reading state information... Done
+    0 upgraded, 0 newly installed, 1 reinstalled, 0 to remove and 0 not upgraded.
+    Need to get 0 B/3,928 B of archives.
+    After this operation, 0 B of additional disk space will be used.
+    (Reading database ... 164812 files and directories currently installed.)
+    Preparing to replace ubuntu-desktop 1.267 (using .../ubuntu-desktop_1.267_amd64.deb) ...
+    Unpacking replacement ubuntu-desktop ...
+    Setting up ubuntu-desktop (1.267) ...
+
+Try this:
+
+Just press Ctrl+Alt+T on your keyboard to open Terminal. When it opens, run the command below.
+
+
+    sudo apt-get install --reinstall ubuntu-desktop
+
+
+-----------------------
+
+    sudo aptitude
+
+Он позволяет выбирать версии пакетов
+
+Хотя можешь просто после удаления ppa сделать
+
+    sudo apt-get purge xserver-xorg
+    sudo apt-get autoremove
+    sudo atp-get install xserver-xorg    
+
+
+В синаптике найти пакет - настройки - пакет - указать версию
+
+Или как написано выше
+
+----------------------------
+
+#Откат обновлений
+
+На "чистой" Росинке работоспособной оказалась небольшая модификация:
+    
+    sudo grep  \( /root/.synaptic/log/2011-06-03.094243.log | awk '{ print $1 }' | xargs apt-get -y purge
+
+Ну надо же шагать в полную автоматизацию :-P
+
+    sudo grep  \( $(sudo grep -lr \( /root/.synaptic/log | sort | tail -1) | awk '{ print $1 }' | xargs apt-get -y purge
+
+*STOP* Хотя от бездумного удаления пакетов списком я все же настоятельно рекомендую отказаться!!!
+
+Только посмотреть на последние обновления:
+
+    sudo grep  \( $(sudo grep -lr \( /root/.synaptic/log | sort | tail -1) | awk '{ print $1 }'
+
+
+>>Вот если сваять скрипт, который действительно делал бы откат, т.е. down-grade, -- вот тогда да. Но у меня, как начинающего-изучающего, знаний не хватит для такого.
+
+Пожалуйста:
+
+    sudo grep -o '^.*) to ' /root/.synaptic/log/$(sudo ls -1 /root/.synaptic/log | tail -1) | sed -e 's/ (/=/' -e 's/) to //' | xargs sudo apt-get -y install
+
+Делает down-grade последнего обновления (но только если остались версии пакетов, которые были до обновления - у меня, например, обновление выполненное неделю назад уже не откатывается: не находит предыдущие версии пакетов)
+
+
+----------------------
+
+
+>> Привет! Был Ubuntu 9.10 x64, зачесались руки, обновился до 10.04 Alpha 2, всё упало и работать отказывается.
+
+
+    sudo apt-get update
+    sudo apt-get remove ubuntu-desktop
+    sudo apt-get autoremove
+    sudo apt-get install ubuntu-desktop
+    #Профит.
+
+
+
+
+--------------------------
+
+(за настройки не боись - после переустановки сохранятся)
+
+    # sudo apt-get remove gnome* ubuntu-desktop -y 
+
+
+ 
+(почистит то, с чем не удалось справиться простому ремуву)
+    # sudo apt-get autoremove -y
+
+ 
+(так, на всякий случай, мало ли чё. Можно не применять)
+    # sudo apt-get clean -y
+
+
+ 
+(обновим инфу о пакетах)
+    # sudo apt-get update
+    # sudo apt-get install ubuntu-desktop -y
+-->
+
 
 <!--right-side-panel -->
 
 <noscript><div class="alert alert-warning"><h3>Для просмотра этого сайта необходимо включить JavaScript в вашем браузере</h3></div></noscript>
+
 </body>
 </html>
