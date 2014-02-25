@@ -7,7 +7,14 @@
     
     <link rel="stylesheet" href="/styles/highlight/default.css">
     <script src="/js/highlight.pack.js"></script>
-    <script>hljs.initHighlightingOnLoad();</script>
+    <script type="text/javascript">
+        $(document).ready(function() {
+            setTimeout(function() {
+                hljs.initHighlightingOnLoad();
+            }, 1000); 
+        });
+    </script>
+        
 </head>
 <body>
 
