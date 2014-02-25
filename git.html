@@ -61,9 +61,21 @@ rm -rf old-repository.git
 # Remove our temporary local repository
 ```
 
+###№ Git через HTTPS с использованием OAuth токен
+
+```bash
+git clone https://github.com/username/repo.git
+Username: your_token
+Password:
+```
+в качестве пароля можно указать ``x-oauth-basic``
 
 
-
+#### Кеширование пароля
+```bash
+git config --global credential.helper 'cache --timeout=3600'
+git config --global credential.helper cache
+```
 
 В буфер
 
