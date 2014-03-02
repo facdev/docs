@@ -13,7 +13,13 @@
 
 
 <!--content-panel
-Новая страница
+# команды bash
+
+
+Список пользователей:
+
+    $ awk -F':' '{ print $3 ":\t" $1 }' /etc/passwd | sort -n
+
 
 
  -->
@@ -21,5 +27,6 @@
 <!--right-side-panel -->
 
 <noscript><div class="alert alert-warning"><h3>Для просмотра этого сайта необходимо включить JavaScript в вашем браузере</h3></div></noscript>
+
 </body>
 </html>
