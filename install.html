@@ -18,8 +18,53 @@
 
  -->
 
-<!--right-side-panel -->
+<!--right-side-panel
+
+```bash
+apt-get update
+apt-get upgrade -y --no-install-recommends
+
+apt-get install -y vim curl mc man make zip 
+
+apt-get install -y guake xclip
+apt-get install -y  guake mc curl vim xclip
+apt-get install -y git git-sh git-svn git-gui
+apt-get install -y nodejs node-less npm gem ant
+
+
+
+apt-get install -y apache2 libapache2-mod-macro 
+apt-get install -y php5 php-pear php5-dev php5-mysql php5-pgsql php5-sqlite php5-memcache \
+                   php5-gd php5-xdebug php5-curl php5-mcrypt php5-cli php5-xsl 
+
+apt-get install -y python-mysqldb python-pygresql python-psycopg2 python-sqlite python-redis python-memcache \
+                   python-pip python-imaging 
+
+apt-get install -y mysql-server mysql-client memcached \
+                   sqlite sqlite3 postgresql sphinxsearch redis-server 
+
+apt-get -y autoremove
+```
+
+```bash
+pear config-set auto_discover 1
+pear install pear.phpunit.de/PHPUnit phpunit/DbUnit phpunit/PHPUnit_SkeletonGenerator
+pear install components.ez.no/base ezc/database ezc/consoletools
+pear update-channels
+pear upgrade-all
+```
+
+
+```
+
+wget -O dropbox.py "https://www.dropbox.com/download?dl=packages/dropbox.py"
+
+cd ~ && wget -O - "https://www.dropbox.com/download?plat=lnx.x86" | tar xzf -
+~/.dropbox-dist/dropboxd &
+```-->
+
 
 <noscript><div class="alert alert-warning"><h3>Для просмотра этого сайта необходимо включить JavaScript в вашем браузере</h3></div></noscript>
+
 </body>
 </html>
