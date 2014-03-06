@@ -18,14 +18,13 @@
 apt-get update
 apt-get upgrade -y --no-install-recommends
 
+apt-get install -y google-chrome-stable
 apt-get install -y vim curl mc man make zip 
 
 apt-get install -y guake xclip
-apt-get install -y  guake mc curl vim xclip
+apt-get install -y guake mc curl vim xclip
 apt-get install -y git git-sh git-svn git-gui
 apt-get install -y nodejs node-less npm gem ant
-
-
 
 apt-get install -y apache2 libapache2-mod-macro 
 apt-get install -y php5 php-pear php5-dev php5-mysql php5-pgsql php5-sqlite php5-memcache \
@@ -78,7 +77,6 @@ wget http://phpdox.de/releases/phpdox.phar && chmod +x phpdox.phar && mv phpdox.
 
 
 ```
-
 wget -O dropbox.py "https://www.dropbox.com/download?dl=packages/dropbox.py"
 
 cd ~ && wget -O - "https://www.dropbox.com/download?plat=lnx.x86" | tar xzf -
