@@ -13,12 +13,6 @@
 
 
 <!--content-panel
-Новая страница
-
-
- -->
-
-<!--right-side-panel
 
 ```bash
 apt-get update
@@ -48,10 +42,38 @@ apt-get -y autoremove
 
 ```bash
 pear config-set auto_discover 1
+pear install pear/console_commandline pear/PHP_CodeSniffer
 pear install pear.phpunit.de/PHPUnit phpunit/DbUnit phpunit/PHPUnit_SkeletonGenerator
 pear install components.ez.no/base ezc/database ezc/consoletools
+pear install --alldeps pear.netpirates.net/autoload
+pear install --alldeps pear.phpmd.org/PHP_PMD
+pear install pear.apigen.org/apigen
+
 pear update-channels
 pear upgrade-all
+```
+
+```bash
+echo "# conposer"
+curl -sS https://getcomposer.org/installer | php && chmod +x composer.phar && mv composer.phar /usr/local/bin/composer
+
+echo "# PHPUnit"
+wget https://phar.phpunit.de/phpunit.phar && chmod +x phpunit.phar && mv phpunit.phar /usr/local/bin/phpunit
+
+echo "# PHPUnit-Skelgen"
+wget https://phar.phpunit.de/phpunit-skelgen.phar && chmod +x phpunit-skelgen.phar && mv phpunit-skelgen.phar /usr/local/bin/phpunit-skelgen
+
+echo "# PHPLoc"
+wget https://phar.phpunit.de/phploc.phar && chmod +x phploc.phar && mv phploc.phar /usr/local/bin/phploc
+
+echo "# PDepend"
+wget http://static.pdepend.org/php/1.1.0/pdepend.phar && chmod +x pdepend.phar && mv pdepend.phar /usr/local/bin/pdepend
+
+echo "# PHpcpd"
+wget https://phar.phpunit.de/phpcpd.phar && chmod +x phpcpd.phar  && mv phpcpd.phar /usr/local/bin/phpcpd
+
+echo "# PHPDox"
+wget http://phpdox.de/releases/phpdox.phar && chmod +x phpdox.phar && mv phpdox.phar /usr/local/bin/phpdox
 ```
 
 
@@ -61,10 +83,18 @@ wget -O dropbox.py "https://www.dropbox.com/download?dl=packages/dropbox.py"
 
 cd ~ && wget -O - "https://www.dropbox.com/download?plat=lnx.x86" | tar xzf -
 ~/.dropbox-dist/dropboxd &
-```-->
+```
+
+ -->
+
+
+<!--right-side-panel
+-->
+
 
 
 <noscript><div class="alert alert-warning"><h3>Для просмотра этого сайта необходимо включить JavaScript в вашем браузере</h3></div></noscript>
+
 
 </body>
 </html>
